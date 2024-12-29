@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento de Horários</title>
+    <link rel="stylesheet" href="teste.css">
+    <script type="module" src="app.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Gerenciamento de Horários</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Adicionar Horários Disponíveis</h2>
+            <form id="form-horarios">
+                <input type="date" id="data-horario" required>
+                <input type="time" id="hora-horario" required>
+                <button type="submit">Adicionar</button>
+            </form>
+            <ul id="lista-horarios"></ul>
+        </section>
+        <section>
+            <h2>Agendar Horário</h2>
+            <form id="form-agendamento">
+                <select id="horarios-disponiveis" required>
+                    <option value="">Selecione um horário</option>
+                </select>
+                <input type="text" id="nome-cliente" placeholder="Nome" required>
+                <button type="submit">Agendar</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
