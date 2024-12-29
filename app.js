@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
 
 // Configuração do Firebase
 const firebaseConfig = {
@@ -18,7 +18,6 @@ const db = getFirestore(app);
 // Referências do DOM
 const formHorarios = document.getElementById("form-horarios");
 const listaHorarios = document.getElementById("lista-horarios");
-const formAgendamento = document.getElementById("form-agendamento");
 const selectHorariosDisponiveis = document.getElementById("horarios-disponiveis");
 
 // Carregar horários disponíveis
@@ -33,8 +32,19 @@ async function carregarHorarios() {
             const li = document.createElement("li");
             li.textContent = `${horario.data} às ${horario.hora}`;
             li.dataset.id = doc.id;
+
+            // Botão para remover horário
+            const btnRemover = document.createElement("button");
+            btnRemover.textContent = "Remover";
+            btnRemover.onclick = async () => {
+                await deleteDoc(doc(db, "horarios", doc.id));
+                carregarHorarios();
+            };
+
+            li.appendChild(btnRemover);
             listaHorarios.appendChild(li);
 
+            // Adicionar ao dropdown
             const option = document.createElement("option");
             option.value = doc.id;
             option.textContent = `${horario.data} às ${horario.hora}`;
@@ -64,37 +74,6 @@ formHorarios.addEventListener("submit", async (e) => {
     } catch (error) {
         console.error("Erro ao adicionar horário:", error);
         alert("Erro ao adicionar horário.");
-    }
-});
-
-// Agendar horário
-formAgendamento.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const idHorario = selectHorariosDisponiveis.value;
-    const nomeCliente = document.getElementById("nome-cliente").value;
-
-    if (!idHorario || !nomeCliente) {
-        alert("Preencha todos os campos.");
-        return;
-    }
-
-    try {
-        const horarioRef = doc(db, "horarios", idHorario);
-        const horarioSnapshot = await getDocs(horarioRef);
-
-        await addDoc(collection(db, "agendamentos"), {
-            nome: nomeCliente,
-            data: horarioSnapshot.data().data,
-            hora: horarioSnapshot.data().hora,
-        });
-
-        await deleteDoc(horarioRef);
-        formAgendamento.reset();
-        carregarHorarios();
-        alert("Agendamento realizado com sucesso!");
-    } catch (error) {
-        console.error("Erro ao agendar horário:", error);
-        alert("Erro ao agendar horário.");
     }
 });
 
